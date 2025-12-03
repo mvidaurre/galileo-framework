@@ -1,3 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Galileo Platform – Ways of Work & Product Operative Model</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GSAP (optional, used only for mild entrance animation) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #3b82f6, #10b981, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .view-switcher {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(11, 15, 25, 0.96);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+            padding: 12px 20px;
+        }
+
+        .view-btn {
+            padding: 10px 22px;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 1px solid transparent;
+            transition: all 0.25s ease;
+        }
+
+        .view-btn.active {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            color: white;
+            box-shadow: 0 6px 26px rgba(59, 130, 246, 0.35);
+        }
+
+        .view-btn:not(.active) {
+            background: rgba(15, 23, 42, 0.9);
+            color: #cbd5f5;
+            border-color: rgba(148, 163, 184, 0.5);
+        }
+
+        .view-btn:not(.active):hover {
+            background: rgba(30, 64, 175, 0.8);
+            color: white;
+        }
+
+        .view-container {
+            display: none;
+            padding-top: 76px;
+        }
+
+        .view-container.active {
+            display: block;
+        }
+
+        .reveal-on-scroll {
+            /* opacity: 0; */
+            /* transform: translateY(26px); */
+            transition: all 0.6s ease;
+        }
+
+        .reveal-on-scroll.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Avoid invisible overlays blocking clicks */
+        #pom-layer-teams,
+        #pom-layer-loops,
+        #pom-layer-residuality,
+        #arch-layer-rt {
+            pointer-events: none;
+        }
+
+        .animate-flow-fast {
+            animation: flowDash 3s linear infinite;
+        }
+
+        @keyframes flowDash {
+            to { stroke-dashoffset: -30; }
+        }
+
+        .animate-soft-pulse {
+            animation: softPulse 2.4s ease-in-out infinite;
+        }
+
+        @keyframes softPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+
+        .pov-filter-btn.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3));
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .pov-role-card {
+            transition: all 0.3s ease;
+        }
+
+        .pov-role-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .pov-role-bubble {
+            transition: transform 0.2s ease;
+        }
+
+        .pov-role-bubble:hover {
+            transform: scale(1.1);
+        }
+
+        .pov-role-bubble:hover circle {
+            filter: url(#pov-glow);
+        }
+
+        .ctx-clickable {
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .ctx-clickable:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+
+        .ctx-clickable:hover rect {
+            stroke-width: 3 !important;
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden">
+
+<!-- NAV SWITCHER -->
+<nav class="view-switcher">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl font-bold text-gradient">Galileo</span>
+            <span class="text-slate-500 text-sm">Platform</span>
+            <span class="text-slate-600 text-sm">| Unified Socio-Technical Framework</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <button class="view-btn active" onclick="switchView('wow', event)">
+                <span class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs">sync_alt</span>
+                    Ways of Work
+                </span>
+            </button>
+            <button class="view-btn" onclick="switchView('pom', event)">
+                <span class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs">hub</span>
+                    Product Operative Model
+                </span>
+            </button>
+            <button class="view-btn" onclick="switchView('sta', event)">
+                <span class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs">layers</span>
+                    Socio-Technical Architecture
+                </span>
+            </button>
+            <button class="view-btn" onclick="switchView('pov', event)">
+                <span class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs">visibility</span>
+                    Role POV Model
+                </span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================= -->
+<!-- VIEW 1 – GALILEO WAYS OF WORK                -->
+<!-- ============================================= -->
+<div id="wow-view" class="view-container active">
+
+    <!-- HERO -->
+    <header class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden px-6">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#020617] via-[#020617] to-[#020617]"></div>
+
+        <div class="relative max-w-5xl mx-auto text-center z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-blue-500/40 bg-blue-500/10 mb-5">
+                <span class="material-symbols-outlined text-sm text-blue-300">apartment</span>
+                <span class="text-xs tracking-[0.18em] uppercase text-blue-200">
+                    Lentes Galileo S.A.P.I. de C.V. – Galileo Platform
+                </span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight">
+                Galileo <span class="text-gradient">Ways of Work</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl text-slate-200 font-light mb-8 max-w-4xl mx-auto">
+                A socio technical continuous flow model where
+                <span class="font-semibold text-white">Discovery, Delivery, and Operations</span>
+                move in parallel, share information continuously, and adapt in real time to uncertainty.
+            </p>
+
+            <div class="glass-panel rounded-2xl p-7 border-l-4 border-blue-500 text-left">
+                <h2 class="text-lg font-semibold text-slate-50 mb-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-300 text-xl">music_note</span>
+                    Executive metaphor – dance, not phases
+                </h2>
+                <p class="text-slate-200 text-sm md:text-base leading-relaxed">
+                    Working at Galileo is closer to dancing with the customer problem than following a rigid choreography.
+                    We do not work in a sequence like
+                    <span class="italic">first listen, then learn the rhythm, then try to dance</span>.
+                    Discovery, Delivery, and Operations must hear the music at the same time, react to each other,
+                    and adjust in short loops. That is how we reduce residual uncertainty and build resilient flows for
+                    e commerce, stores, lab and logistics in Mexico, Chile, and Colombia.
+                </p>
+            </div>
+
+            <div class="mt-10">
+                <span class="material-symbols-outlined text-3xl text-slate-500 animate-bounce">expand_more</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTINUOUS FLOW ENGINE -->
+    <section class="py-16 px-4 bg-[#020617]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-semibold mb-2">Continuous Flow Engine</h2>
+                <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base">
+                    Discovery, Delivery, and Operations are three parallel tracks. They are never sequential.
+                    They run at different cadences, share information, and close feedback loops continuously.
+                    Use the modes below to highlight specific feedback loops or the Residuality Theory lens.
+                </p>
+            </div>
+
+            <!-- Modes -->
+            <div class="flex flex-wrap justify-center gap-3 mb-7">
+                <button onclick="wowSetMode('default')"
+                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-800 text-slate-200 text-xs md:text-sm border border-slate-600">
+                    Standard flow
+                </button>
+                <button onclick="wowSetMode('insight')"
+                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-blue-200 text-xs md:text-sm border border-blue-700 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs">psychology</span>
+                    Insight loop
+                </button>
+                <button onclick="wowSetMode('stability')"
+                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-emerald-200 text-xs md:text-sm border border-emerald-700 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs">health_and_safety</span>
+                    Stability loop
+                </button>
+                <button onclick="wowSetMode('residuality')"
+                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-purple-200 text-xs md:text-sm border border-purple-700 flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-xs">visibility</span>
+                    Residuality view
+                </button>
+            </div>
+
+            <!-- SVG diagram -->
+            <div class="relative w-full max-w-7xl mx-auto aspect-[16/9] glass-panel rounded-3xl overflow-hidden shadow-xl">
+               <div id="wow-info-overlay"
+                    class="absolute top-3 right-3 max-w-xs bg-slate-900/95 glass-panel rounded-xl p-4 border border-slate-700 z-20">
+                    <h3 id="wow-overlay-title" class="text-sm font-semibold text-slate-50 mb-1">
+                        Three parallel tracks
+                    </h3>
+                    <p id="wow-overlay-desc" class="text-xs text-slate-300 leading-relaxed">
+                        Discovery, Delivery, and Operations run in parallel. They exchange information through short loops,
+                        not through big handoffs.
+                    </p>
+                </div>
+
+                <svg id="wow-flow-diagram" viewBox="0 0 1200 675"
+                     class="absolute inset-0 w-full h-full">
+                    <defs>
+                        <pattern id="wow-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40"
+                                  fill="none"
+                                  stroke="rgba(148,163,184,0.14)"
+                                  stroke-width="1"/>
+                        </pattern>
+
+                        <linearGradient id="wow-grad-discovery" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.20"/>
+                            <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.35"/>
+                        </linearGradient>
+                        <linearGradient id="wow-grad-delivery" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#10b981" stop-opacity="0.20"/>
+                            <stop offset="100%" stop-color="#34d399" stop-opacity="0.35"/>
+                        </linearGradient>
+                        <linearGradient id="wow-grad-ops" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#f97373" stop-opacity="0.20"/>
+                            <stop offset="100%" stop-color="#fb7185" stop-opacity="0.35"/>
+                        </linearGradient>
+
+                        <marker id="wow-arrow-red" markerWidth="10" markerHeight="10"
+                                refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#fb7185"/>
+                        </marker>
+
+                        <marker id="wow-arrow-green" markerWidth="10" markerHeight="10"
+                                refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#22c55e"/>
+                        </marker>
+
+                        <linearGradient id="wow-fog-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+
+                    <rect width="100%" height="100%" fill="url(#wow-grid)"/>
+
+                    <!-- Discovery track -->
+                    <g id="wow-track-discovery" class="cursor-pointer"
+                       onclick="wowShowDetail('discovery')">
+                        <path d="M -100,150 C 200,150 400,110 600,150 C 800,190 1000,150 1300,150"
+                              fill="none"
+                              stroke="url(#wow-grad-discovery)"
+                              stroke-width="64"
+                              stroke-opacity="0.22"/>
+                        <path d="M -100,150 C 200,150 400,110 600,150 C 800,190 1000,150 1300,150"
+                              fill="none"
+                              stroke="#60a5fa"
+                              stroke-width="3"
+                              stroke-dasharray="20 10"
+                              class="animate-flow-fast"/>
+                        <text x="90" y="108"
+                              fill="#bfdbfe"
+                              font-size="22"
+                              font-weight="600">
+                            A. Discovery · Clarify
+                        </text>
+                    </g>
+
+                    <!-- Delivery track -->
+                    <g id="wow-track-delivery" class="cursor-pointer"
+                       onclick="wowShowDetail('delivery')">
+                        <path d="M -100,337.5 C 200,337.5 400,387.5 600,337.5 C 800,287.5 1000,337.5 1300,337.5"
+                              fill="none"
+                              stroke="url(#wow-grad-delivery)"
+                              stroke-width="64"
+                              stroke-opacity="0.22"/>
+                        <path d="M -100,337.5 C 200,337.5 400,387.5 600,337.5 C 800,287.5 1000,337.5 1300,337.5"
+                              fill="none"
+                              stroke="#6ee7b7"
+                              stroke-width="3"
+                              stroke-dasharray="20 10"
+                              class="animate-flow-fast"
+                              style="animation-delay: -0.8s"/>
+                        <text x="90" y="305"
+                              fill="#bbf7d0"
+                              font-size="22"
+                              font-weight="600">
+                            B. Delivery · Build
+                        </text>
+                    </g>
+
+                    <!-- Operations track -->
+                    <g id="wow-track-ops" class="cursor-pointer"
+                       onclick="wowShowDetail('operations')">
+                        <path d="M -100,525 C 200,525 400,485 600,525 C 800,565 1000,525 1300,525"
+                              fill="none"
+                              stroke="url(#wow-grad-ops)"
+                              stroke-width="64"
+                              stroke-opacity="0.22"/>
+                        <path d="M -100,525 C 200,525 400,485 600,525 C 800,565 1000,525 1300,525"
+                              fill="none"
+                              stroke="#fecaca"
+                              stroke-width="3"
+                              stroke-dasharray="20 10"
+                              class="animate-flow-fast"
+                              style="animation-delay: -1.6s"/>
+                        <text x="90" y="493"
+                              fill="#fecaca"
+                              font-size="22"
+                              font-weight="600">
+                            C. Operations · Prove
+                        </text>
+                    </g>
+
+                    <!-- Feedback loops -->
+                    <g id="wow-loops-layer" class="transition-opacity duration-500 opacity-0">
+                        <!-- Ops -> Disc (Insight) -->
+                        <path d="M 640,505 Q 520,337.5 640,170"
+                              fill="none"
+                              stroke="#fb7185"
+                              stroke-width="2"
+                              stroke-dasharray="6 6"
+                              marker-end="url(#wow-arrow-red)">
+                            <animate attributeName="stroke-dashoffset"
+                                     from="120" to="0"
+                                     dur="2s"
+                                     repeatCount="indefinite"/>
+                        </path>
+
+                        <!-- Del -> Disc (Feasibility) -->
+                        <path d="M 760,317 Q 680,240 760,165"
+                              fill="none"
+                              stroke="#22c55e"
+                              stroke-width="2"
+                              stroke-dasharray="6 6"
+                              marker-end="url(#wow-arrow-green)">
+                            <animate attributeName="stroke-dashoffset"
+                                     from="120" to="0"
+                                     dur="2s"
+                                     repeatCount="indefinite"/>
+                        </path>
+
+                        <!-- Ops -> Del (Stability) -->
+                        <path d="M 520,357 Q 600,430 520,505"
+                              fill="none"
+                              stroke="#22c55e"
+                              stroke-width="2"
+                              stroke-dasharray="6 6"
+                              marker-end="url(#wow-arrow-green)">
+                            <animate attributeName="stroke-dashoffset"
+                                     from="120" to="0"
+                                     dur="2s"
+                                     repeatCount="indefinite"/>
+                        </path>
+                    </g>
+
+                    <!-- Residuality overlay -->
+                    <g id="wow-residuality-layer" class="transition-opacity duration-500 opacity-0">
+                        <rect x="0" y="80" width="1200" height="80"
+                              fill="url(#wow-fog-gradient)"
+                              opacity="0.16"/>
+                        <text x="80" y="110" fill="#fca5a5" font-size="12">
+                            Unknown unknowns – early Discovery and real life constraints
+                        </text>
+
+                        <circle cx="260" cy="345" r="8" fill="#fb7185" class="animate-soft-pulse"/>
+                        <circle cx="310" cy="355" r="6" fill="#fb7185" class="animate-soft-pulse" style="animation-delay:0.3s"/>
+                        <circle cx="290" cy="375" r="7" fill="#fb7185" class="animate-soft-pulse" style="animation-delay:0.6s"/>
+
+                        <text x="248" y="330" fill="#fecaca" font-size="10">
+                            Stressors
+                        </text>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="mt-4 flex justify-between text-[11px] text-slate-400">
+                <span>Figure 1 – Continuous DDO flow for Galileo Platform</span>
+                <span>Click each track to highlight its role</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRACK DETAILS -->
+    <section class="py-18 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-semibold mb-12 text-center">
+                Three parallel tracks, one <span class="text-gradient">customer value stream</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Discovery -->
+                <article class="glass-panel rounded-2xl p-7 border-t-4 border-blue-500 reveal-on-scroll">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xl font-semibold text-blue-200 flex items-center gap-2">
+                            <span class="material-symbols-outlined">explore</span>
+                            Discovery
+                        </h3>
+                        <span class="text-[11px] text-slate-400 uppercase tracking-wide">
+                            Clarify problem and context
+                        </span>
+                    </div>
+                    <p class="text-sm text-slate-200 mb-4">
+                        Discovery reduces uncertainty enough so that a decision is possible. It does not try to know everything.
+                        It clarifies the problem, constraints, and impacts with real context from stores, lab and customers.
+                    </p>
+                    <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
+                        <li>• Archetypes, personas, Jobs to Be Done, context of use</li>
+                        <li>• Explicit assumptions and hypotheses</li>
+                        <li>• Problem framing, opportunity and impact</li>
+                        <li>• Domain modeling: EventStorming, Domain Storytelling</li>
+                        <li>• Early feasibility and viability checks</li>
+                        <li>• Draft SLIs and SLOs for what success means</li>
+                    </ul>
+                    <p class="text-[12px] text-slate-400">
+                        Feeds Delivery with clarified scope and constraints. Receives operational reality from Operations to refine assumptions.
+                    </p>
+                </article>
+
+                <!-- Delivery -->
+                <article class="glass-panel rounded-2xl p-7 border-t-4 border-emerald-500 reveal-on-scroll">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xl font-semibold text-emerald-200 flex items-center gap-2">
+                            <span class="material-symbols-outlined">code</span>
+                            Delivery
+                        </h3>
+                        <span class="text-[11px] text-slate-400 uppercase tracking-wide">
+                            Build operable solutions
+                        </span>
+                    </div>
+                    <p class="text-sm text-slate-200 mb-4">
+                        Delivery creates solutions that are ready to live in production. It balances speed, safety, and technical coherence for Odoo, PoS, lab, logistics and data.
+                    </p>
+                    <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
+                        <li>• Delivery modes: greenfield, brownfield, strangler, firefighting</li>
+                        <li>• Threat modeling, spikes, PoCs</li>
+                        <li>• Sacrificial architecture when learning is the main goal</li>
+                        <li>• Architecture coherence and Well Architected principles</li>
+                        <li>• Fitness functions and living documentation</li>
+                        <li>• Observability instrumentation and quality gates</li>
+                    </ul>
+                    <p class="text-[12px] text-slate-400">
+                        Works with Discovery to adjust feasibility and constraints. Works with Operations to protect error budgets and resilience.
+                    </p>
+                </article>
+
+                <!-- Operations -->
+                <article class="glass-panel rounded-2xl p-7 border-t-4 border-red-500 reveal-on-scroll">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xl font-semibold text-rose-200 flex items-center gap-2">
+                            <span class="material-symbols-outlined">monitor_heart</span>
+                            Operations
+                        </h3>
+                        <span class="text-[11px] text-slate-400 uppercase tracking-wide">
+                            Prove value in reality
+                        </span>
+                    </div>
+                    <p class="text-sm text-slate-200 mb-4">
+                        Operations is where the system meets customers, stores and lab. It reveals what really happens: value, bottlenecks, and fragility.
+                    </p>
+                    <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
+                        <li>• Error budgets, SLI and SLO tracking</li>
+                        <li>• Incident detection, triage and resolution</li>
+                        <li>• User behavior and operational load tracking</li>
+                        <li>• A B testing and impact measurement</li>
+                        <li>• Data quality, contracts and lifecycle</li>
+                        <li>• Resilience testing and failure analysis</li>
+                    </ul>
+                    <p class="text-[12px] text-slate-400">
+                        Feeds Delivery with new insights and constraints. Feeds Operations with performance, reliability and regression patterns.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
     <!-- CUSTOMER VALUE STREAM JOURNEY -->
     <section class="py-18 bg-[#020617]">
         <div class="max-w-7xl mx-auto px-6">
@@ -12,60 +582,61 @@
             </p>
 
             <!-- Stages of the Journey -->
+            <h3 class="text-2xl font-semibold text-center mb-6">Customer Journey Stages</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-blue-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-blue-400 text-2xl">campaign</span>
-                        <h3 class="text-xl font-semibold text-slate-100">Acquisition</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">Acquisition</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Sees an ad or gets a referral</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-emerald-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-emerald-400 text-2xl">eyeglasses</span>
-                        <h3 class="text-xl font-semibold text-slate-100">Look Good</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">Look Good</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Explores & chooses frames</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-purple-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-purple-400 text-2xl">visibility</span>
-                        <h3 class="text-xl font-semibold text-slate-100">See Well</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">See Well</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Gets an eye exam in-store</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-amber-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-amber-400 text-2xl">shopping_cart</span>
-                        <h3 class="text-xl font-semibold text-slate-100">Decide on Us</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">Decide on Us</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Makes the purchase at the PoS</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-rose-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-rose-400 text-2xl">receipt_long</span>
-                        <h3 class="text-xl font-semibold text-slate-100">Get Receipts</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">Get Receipts</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Receives confirmation, requests invoice</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-cyan-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-cyan-400 text-2xl">precision_manufacturing</span>
-                        <h3 class="text-xl font-semibold text-slate-100">Quality & Progress</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">Quality & Progress</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Lenses are crafted and pass QC</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-indigo-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-indigo-400 text-2xl">local_shipping</span>
-                        <h3 class="text-xl font-semibold text-slate-100">Track Your Order</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">Track Your Order</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Checks status and receives the order</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-6 border-t-4 border-lime-500 reveal-on-scroll">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="material-symbols-outlined text-lime-400 text-2xl">sentiment_very_satisfied</span>
-                        <h3 class="text-xl font-semibold text-slate-100">Enjoy Product</h3>
+                        <h4 class="text-xl font-semibold text-slate-100">Enjoy Product</h4>
                     </div>
                     <p class="text-sm text-slate-300">• Uses product with support & warranty</p>
                 </div>
@@ -95,7 +666,7 @@
             </div>
 
             <!-- Alternative Paths & Exceptions -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                 <div class="glass-panel rounded-2xl p-6 border-l-4 border-orange-400 reveal-on-scroll">
                     <h3 class="text-2xl font-semibold text-orange-300 mb-4">Alternative Paths & Exceptions</h3>
                     <h4 class="text-xl font-semibold text-orange-200 mb-3">Common Alternative Paths</h4>
@@ -129,12 +700,47 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- DDO Integration Map -->
+            <h3 class="text-2xl md:text-3xl font-semibold mb-8 text-center mt-12">Diagram → DDO Integration Map</h3>
+            <div class="glass-panel rounded-2xl p-6 reveal-on-scroll">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-auto">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="py-2 pr-4 text-sm font-semibold text-slate-300">Customer Step</th>
+                                <th class="py-2 px-4 text-sm font-semibold text-slate-300">Primary DDO Track</th>
+                                <th class="py-2 pl-4 text-sm font-semibold text-slate-300">Supporting Team Topology</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 pr-4 text-sm text-slate-400">Acquisition / Explore & Choose</td>
+                                <td class="py-2 px-4 text-sm text-blue-300">Discovery</td>
+                                <td class="py-2 pl-4 text-sm text-slate-400">Stream-Aligned (CommerceFlow)</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4 text-sm text-emerald-300">Delivery</td>
+                                <td class="py-2 px-4 text-sm text-slate-400">Stream-Aligned (PoS), Complicated Subsystem (Odoo)</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 px-4 text-sm text-slate-400">Billing / Shipping & Delivery</td>
+                                <td class="py-2 px-4 text-sm text-rose-300">Operations</td>
+                                <td class="py-2 pl-4 text-sm text-slate-400">Platform (Data, Tech), Stream-Aligned (Logistics)</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-2 pr-4 text-sm text-slate-400">Manufacturing & QC</td>
+                                <td class="py-2 px-4 text-sm text-emerald-300">Delivery</td>
+                                <td class="py-2 pl-4 text-sm text-slate-400">Complicated Subsystem (Lab), Enabling (Quality)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 pr-4 text-sm text-slate-400">Warranty & Support</td>
+                                <td class="py-2 px-4 text-sm text-rose-300">Operations</td>
+                                <td class="py-2 pl-4 text-sm text-slate-400">Stream-Aligned (CustomerCare), Enabling (Design)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </section>
-
-</div> <!-- End of wow-view -->
-
-<!-- ============================================= -->
-<!-- VIEW 2 – PRODUCT OPERATIVE MODEL (POM)       -->
-<!-- ============================================= -->
-<div id="pom-view" class="view-container">
