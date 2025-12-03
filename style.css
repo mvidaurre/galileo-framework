@@ -66,8 +66,8 @@
         }
 
         .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(26px);
+            /* opacity: 0; */
+            /* transform: translateY(26px); */
             transition: all 0.6s ease;
         }
 
