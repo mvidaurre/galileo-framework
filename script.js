@@ -91,20 +91,34 @@ function setupGlobalEventListeners() {
 }
 
 function switchView(viewId) {
-    if (!viewId || viewId === appState.currentView) return;
+    console.log('switchView called with viewId:', viewId);
+    if (!viewId || viewId === appState.currentView) {
+        console.log('switchView returned: no viewId or already current view');
+        return;
+    }
     appState.currentView = viewId;
+    console.log('Current view set to:', appState.currentView);
 
     document.querySelectorAll('.view-container').forEach(container => {
         container.classList.remove('active');
     });
-    document.getElementById(`${viewId}-view`)?.classList.add('active');
+    const targetView = document.getElementById(`${viewId}-view`);
+    if (targetView) {
+        targetView.classList.add('active');
+        console.log('Added active class to:', targetView.id);
+    } else {
+        console.log('Target view element not found:', `${viewId}-view`);
+    }
 
     document.querySelectorAll('.view-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.view === viewId);
     });
+    console.log('Button active states updated.');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => setupScrollTriggersForView(viewId), 150);
+    // Temporarily comment out scroll trigger setup to rule out interference
+    // setTimeout(() => setupScrollTriggersForView(viewId), 150);
+    console.log('Scroll trigger setup commented out temporarily.');
 }
 
 function setupScrollTriggersForView(viewId) {
