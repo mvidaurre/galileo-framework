@@ -4,744 +4,628 @@
     <meta charset="UTF-8">
     <title>Galileo Platform – Ways of Work & Product Operative Model</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-
-    <!-- Tailwind -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- GSAP (optional, used only for mild entrance animation) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-    <style>
-        body {
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-            background-color: #0b0f19;
-            color: #e2e8f0;
-        }
-
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(148, 163, 184, 0.35);
-        }
-
-        .text-gradient {
-            background: linear-gradient(90deg, #3b82f6, #10b981, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .view-switcher {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            background: rgba(11, 15, 25, 0.96);
-            backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.3);
-            padding: 12px 20px;
-        }
-
-        .view-btn {
-            padding: 10px 22px;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            border: 1px solid transparent;
-            transition: all 0.25s ease;
-        }
-
-        .view-btn.active {
-            background: linear-gradient(90deg, #3b82f6, #10b981);
-            color: white;
-            box-shadow: 0 6px 26px rgba(59, 130, 246, 0.35);
-        }
-
-        .view-btn:not(.active) {
-            background: rgba(15, 23, 42, 0.9);
-            color: #cbd5f5;
-            border-color: rgba(148, 163, 184, 0.5);
-        }
-
-        .view-btn:not(.active):hover {
-            background: rgba(30, 64, 175, 0.8);
-            color: white;
-        }
-
-        .view-container {
-            display: none;
-            padding-top: 76px;
-        }
-
-        .view-container.active {
-            display: block;
-        }
-
-        .reveal-on-scroll {
-            /* opacity: 0; */
-            /* transform: translateY(26px); */
-            transition: all 0.6s ease;
-        }
-
-        .reveal-on-scroll.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Avoid invisible overlays blocking clicks */
-        #pom-layer-teams,
-        #pom-layer-loops,
-        #pom-layer-residuality,
-        #arch-layer-rt {
-            pointer-events: none;
-        }
-
-        .animate-flow-fast {
-            animation: flowDash 3s linear infinite;
-        }
-
-        @keyframes flowDash {
-            to { stroke-dashoffset: -30; }
-        }
-
-        .animate-soft-pulse {
-            animation: softPulse 2.4s ease-in-out infinite;
-        }
-
-        @keyframes softPulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.08); }
-        }
-
-        .pov-filter-btn.active {
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3));
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .pov-role-card {
-            transition: all 0.3s ease;
-        }
-
-        .pov-role-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .pov-role-bubble {
-            transition: transform 0.2s ease;
-        }
-
-        .pov-role-bubble:hover {
-            transform: scale(1.1);
-        }
-
-        .pov-role-bubble:hover circle {
-            filter: url(#pov-glow);
-        }
-
-        .ctx-clickable {
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        .ctx-clickable:hover {
-            transform: scale(1.02);
-            filter: brightness(1.1);
-        }
-
-        .ctx-clickable:hover rect {
-            stroke-width: 3 !important;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
+<body class="antialiased overflow-x-hidden bg-[#020617] text-slate-100">
 
-<body class="antialiased overflow-x-hidden">
-
-<!-- NAV SWITCHER -->
-<nav class="view-switcher">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-            <span class="text-2xl font-bold text-gradient">Galileo</span>
-            <span class="text-slate-500 text-sm">Platform</span>
-            <span class="text-slate-600 text-sm">| Unified Socio-Technical Framework</span>
+    <nav class="view-switcher">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-slate-200">
+                <span class="text-2xl font-bold text-gradient">Galileo</span>
+                <span class="text-sm text-slate-500">Platform</span>
+                <span class="text-sm text-slate-600">| Unified Socio-Technical Framework</span>
+            </div>
+            <div class="grid grid-cols-2 md:flex md:flex-wrap gap-2 w-full md:w-auto">
+                <button class="view-btn active" onclick="switchView('wow', event)"><span class="material-symbols-outlined text-xs mr-1">sync_alt</span> Ways of Work</button>
+                <button class="view-btn" onclick="switchView('pom', event)"><span class="material-symbols-outlined text-xs mr-1">hub</span> Product Operative Model</button>
+                <button class="view-btn" onclick="switchView('sta', event)"><span class="material-symbols-outlined text-xs mr-1">layers</span> Socio-Technical Architecture</button>
+                <button class="view-btn" onclick="switchView('pov', event)"><span class="material-symbols-outlined text-xs mr-1">visibility</span> Role POV Model</button>
+            </div>
         </div>
-        <div class="flex flex-wrap gap-2">
-            <button class="view-btn active" data-view="wow">
-                <span class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-xs">sync_alt</span>
-                    Ways of Work
-                </span>
-            </button>
-            <button class="view-btn" data-view="pom">
-                <span class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-xs">hub</span>
-                    Product Operative Model
-                </span>
-            </button>
-            <button class="view-btn" data-view="sta">
-                <span class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-xs">layers</span>
-                    Socio-Technical Architecture
-                </span>
-            </button>
-            <button class="view-btn" data-view="pov">
-                <span class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-xs">visibility</span>
-                    Role POV Model
-                </span>
-            </button>
+    </nav>
+
+    <!-- WOW VIEW -->
+    <div id="wow-view" class="view-container active">
+        <header class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden px-6 hero-gradient">
+            <div class="relative max-w-5xl mx-auto text-center z-10">
+                <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-blue-500/40 bg-blue-500/10 mb-5">
+                    <span class="material-symbols-outlined text-sm text-blue-300">apartment</span>
+                    <span class="text-xs tracking-[0.18em] uppercase text-blue-200">Lentes Galileo S.A.P.I. de C.V. – Galileo Platform</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight">Galileo <span class="text-gradient">Ways of Work</span></h1>
+                <p class="text-xl md:text-2xl text-slate-200 font-light mb-8 max-w-4xl mx-auto">A socio-technical continuous flow model where <span class="font-semibold text-white">Discovery, Delivery, and Operations</span> move in parallel, share information continuously, and adapt in real time to uncertainty.</p>
+                <div class="glass-panel rounded-2xl p-7 border-l-4 border-blue-500 text-left">
+                    <h2 class="text-lg font-semibold text-slate-50 mb-2 flex items-center gap-2"><span class="material-symbols-outlined text-blue-300 text-xl">music_note</span>Executive metaphor – dance, not phases</h2>
+                    <p class="text-slate-200 text-sm md:text-base leading-relaxed">We dance with the customer problem instead of following a rigid choreography. Discovery, Delivery, and Operations hear the music together, react in short loops, and reduce residual uncertainty across ecommerce, stores, lab, and logistics.</p>
+                </div>
+                <div class="mt-10 text-slate-500"><span class="material-symbols-outlined text-3xl animate-bounce">expand_more</span></div>
+            </div>
+        </header>
+
+        <section class="py-16 px-4 bg-[#020617]" id="wow-diagram-section">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-semibold mb-2">Continuous Flow Engine</h2>
+                    <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base">Discovery, Delivery, and Operations are three parallel tracks. They are never sequential. Use the modes below to highlight specific feedback loops or the Residuality lens.</p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3 mb-7">
+                    <button onclick="wowSetMode('default')" class="wow-mode-btn px-4 py-2 rounded-full bg-slate-800 text-slate-200 text-xs md:text-sm border border-slate-600">Standard flow</button>
+                    <button onclick="wowSetMode('insight')" class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-blue-200 text-xs md:text-sm border border-blue-700 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">psychology</span>Insight loop</button>
+                    <button onclick="wowSetMode('stability')" class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-emerald-200 text-xs md:text-sm border border-emerald-700 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">health_and_safety</span>Stability loop</button>
+                    <button onclick="wowSetMode('residuality')" class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-purple-200 text-xs md:text-sm border border-purple-700 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">visibility</span>Residuality view</button>
+                </div>
+                <div class="relative w-full max-w-7xl mx-auto glass-panel rounded-3xl overflow-hidden shadow-xl diagram-shell">
+                    <div id="wow-info-overlay" class="absolute top-3 right-3 max-w-xs bg-slate-900/95 glass-panel rounded-xl p-4 border border-slate-700 z-20">
+                        <h3 id="wow-overlay-title" class="text-sm font-semibold text-slate-50 mb-1">Three parallel tracks</h3>
+                        <p id="wow-overlay-desc" class="text-xs text-slate-300 leading-relaxed">Discovery, Delivery, and Operations run in parallel. They exchange information through short loops, not through big handoffs.</p>
+                    </div>
+                    <div id="wow-flow-diagram" class="w-full h-full"></div>
+                </div>
+                <div class="mt-4 flex justify-between text-[11px] text-slate-400">
+                    <span>Figure 1 – Continuous DDO flow for Galileo Platform</span>
+                    <span>Click each track to highlight its role</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-slate-950">
+            <div class="max-w-7xl mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-semibold mb-12 text-center">Three parallel tracks, one <span class="text-gradient">customer value stream</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <article class="glass-panel rounded-2xl p-7 border-t-4 border-blue-500 reveal-on-scroll">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-semibold text-blue-200 flex items-center gap-2"><span class="material-symbols-outlined">explore</span>Discovery</h3>
+                            <span class="text-[11px] text-slate-400 uppercase tracking-wide">Clarify problem and context</span>
+                        </div>
+                        <p class="text-sm text-slate-200 mb-4">Discovery reduces uncertainty enough so that a decision is possible. It clarifies the problem, constraints, and impacts with real context from stores, lab, and customers.</p>
+                        <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
+                            <li>• Archetypes, personas, JTBD, context of use</li>
+                            <li>• Explicit assumptions and hypotheses</li>
+                            <li>• Problem framing, opportunity and impact</li>
+                            <li>• Domain modeling and early feasibility checks</li>
+                            <li>• Draft SLIs/SLOs for success definition</li>
+                        </ul>
+                        <p class="text-[12px] text-slate-400">Feeds Delivery with clarified scope. Receives operational reality from Operations to refine assumptions.</p>
+                    </article>
+                    <article class="glass-panel rounded-2xl p-7 border-t-4 border-emerald-500 reveal-on-scroll">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-semibold text-emerald-200 flex items-center gap-2"><span class="material-symbols-outlined">code</span>Delivery</h3>
+                            <span class="text-[11px] text-slate-400 uppercase tracking-wide">Build operable solutions</span>
+                        </div>
+                        <p class="text-sm text-slate-200 mb-4">Delivery creates solutions ready to live in production. It balances speed, safety, and coherence across Odoo, PoS, lab, logistics, and data.</p>
+                        <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
+                            <li>• Delivery modes: greenfield, brownfield, strangler, firefighting</li>
+                            <li>• Threat modeling, spikes, PoCs, sacrificial architecture</li>
+                            <li>• Fitness functions, observability, quality gates</li>
+                            <li>• Architecture coherence and paved roads</li>
+                        </ul>
+                        <p class="text-[12px] text-slate-400">Works with Discovery to adjust feasibility and constraints. Works with Operations to protect error budgets and resilience.</p>
+                    </article>
+                    <article class="glass-panel rounded-2xl p-7 border-t-4 border-rose-500 reveal-on-scroll">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-semibold text-rose-200 flex items-center gap-2"><span class="material-symbols-outlined">monitor_heart</span>Operations</h3>
+                            <span class="text-[11px] text-slate-400 uppercase tracking-wide">Prove value in reality</span>
+                        </div>
+                        <p class="text-sm text-slate-200 mb-4">Operations is where the system meets customers, stores, and lab. It reveals what really happens: value, bottlenecks, and fragility.</p>
+                        <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
+                            <li>• Error budgets, SLI and SLO tracking</li>
+                            <li>• Incident detection, triage, and resolution</li>
+                            <li>• User behavior and operational load tracking</li>
+                            <li>• A/B testing and impact measurement</li>
+                            <li>• Resilience testing and failure analysis</li>
+                        </ul>
+                        <p class="text-[12px] text-slate-400">Feeds Discovery with new insights and constraints. Feeds Delivery with performance, reliability, and regression patterns.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-14 px-4 bg-[#020617] journey-desktop" id="customer-journey">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row gap-6 items-start justify-between mb-6">
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-semibold">Customer Value Stream</h3>
+                        <p class="text-sm text-slate-300 max-w-2xl mt-2">End-to-end flow from the perspective of <span class="font-semibold text-slate-100">4ojos</span> (customer) and <span class="font-semibold text-slate-100">casimirx</span> (store & lab operators). Tap any step to open the detail modal with perspectives, signals, exceptions, and DDO contribution.</p>
+                    </div>
+                    <div class="text-xs text-slate-400 flex flex-wrap gap-2">
+                        <span class="journey-chip tag-blue">Discovery</span>
+                        <span class="journey-chip tag-green">Delivery</span>
+                        <span class="journey-chip tag-rose">Operations</span>
+                    </div>
+                </div>
+                <div class="glass-panel rounded-3xl p-5 overflow-x-auto" aria-label="Customer journey timeline">
+                    <div id="journey-track-desktop" class="journey-track min-w-[1100px]"></div>
+                    <div class="mt-4 text-[11px] text-slate-400 flex flex-wrap gap-3">
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Discovery</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Delivery</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-rose-500"></span> Operations</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-amber-400"></span> Emotional peak</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-12 px-4 bg-[#020617]">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel rounded-2xl p-6 border border-blue-500/30">
+                    <div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-blue-300">flag</span><h3 class="text-xl font-semibold">Moments of Truth</h3></div>
+                    <div class="text-sm text-slate-200 space-y-4">
+                        <div>
+                            <p class="font-semibold text-slate-100">1. Frame Selection</p>
+                            <p><span class="font-semibold text-blue-300">4ojos:</span> "I found a style that represents me." Identity + self-expression.</p>
+                            <p><span class="font-semibold text-emerald-300">casimirx:</span> "Inventory and display generated a sale." Conversion from interest to desire.</p>
+                            <p class="text-slate-400 text-xs mt-1">Discovery</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-100">2. Purchase Confirmation</p>
+                            <p><span class="font-semibold text-blue-300">4ojos:</span> "Payment succeeded and I know what to expect." Trust and security.</p>
+                            <p><span class="font-semibold text-emerald-300">casimirx:</span> "Order is firm and created in Odoo without errors." System integrity.</p>
+                            <p class="text-slate-400 text-xs mt-1">Operations</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-100">3. Delivery and Product Unboxing</p>
+                            <p><span class="font-semibold text-blue-300">4ojos:</span> "It arrived on time and I can see perfectly."</p>
+                            <p><span class="font-semibold text-emerald-300">casimirx:</span> "Cycle is complete, customer is satisfied, may return." Retention and loyalty.</p>
+                            <p class="text-slate-400 text-xs mt-1">Delivery · Operations</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 border border-rose-500/30">
+                    <div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-rose-300">warning</span><h3 class="text-xl font-semibold">Exceptions & Alternative Paths</h3></div>
+                    <div class="space-y-4 text-sm text-slate-200">
+                        <div>
+                            <p class="font-semibold text-slate-100">Common Alternative Paths</p>
+                            <p class="text-slate-300">Prescription issues (Delivery) · Payment failures (Ops) · Variant unavailability (Discovery)</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-100">High-Friction Exceptions</p>
+                            <p class="text-slate-300">Manufacturing delays (Delivery) · Shipping misrouting (Ops) · Odoo constraint errors (Ops)</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-100">Operational Escalations</p>
+                            <p class="text-slate-300">Lab rejects (Ops) · Remake flows (Delivery) · QC failures (Delivery)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- POM VIEW -->
+    <div id="pom-view" class="view-container">
+        <header class="relative min-h-[90vh] flex flex-col justify-center items-center overflow-hidden hero-gradient px-6">
+            <div class="relative z-10 max-w-5xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/60 border border-slate-700/60 mb-6">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-soft-pulse"></span>
+                    <span class="text-xs uppercase tracking-[0.18em] text-slate-300">Galileo Platform</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight text-gradient">Product Operative Model</h1>
+                <p class="text-lg md:text-2xl text-slate-200 font-light max-w-4xl mx-auto mb-8">A continuous discovery, delivery, and operations system that connects teams, architecture, and data to the same customer value streams.</p>
+                <div class="glass-panel p-7 rounded-2xl border-l-4 border-emerald-500 text-left">
+                    <h2 class="text-sm text-emerald-300 font-semibold tracking-wide uppercase mb-2">Executive summary</h2>
+                    <p class="text-sm md:text-base text-slate-200 leading-relaxed">Stream-aligned teams own a bounded context end to end. Platform teams reduce cognitive and operational load with paved roads. Enabling teams uplift capabilities. Complicated subsystem teams handle high complexity areas. DDO stays active across all, guided by Residuality Theory.</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="py-14 bg-[#020617]">
+            <div class="max-w-7xl mx-auto px-4 mb-6 flex flex-col md:flex-row items-end justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-semibold text-slate-50 mb-2">Dynamic flow and socio-technical lens</h2>
+                    <p class="text-sm md:text-base text-slate-300 max-w-xl">DDO tracks, Team Topologies, and Residuality overlays on the same space. No start or end points—customer value stream drives all tracks.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <button onclick="pomToggleLayer('all')" class="pom-mode-btn px-3 py-1.5 rounded-lg bg-slate-900 text-slate-200 border border-slate-700">Standard view</button>
+                    <button onclick="pomToggleLayer('loops')" class="pom-mode-btn px-3 py-1.5 rounded-lg bg-indigo-900/40 text-indigo-200 border border-indigo-700 flex items-center gap-1"><span class="material-symbols-outlined text-xs">sync</span>Feedback loops</span></button>
+                    <button onclick="pomToggleLayer('teams')" class="pom-mode-btn px-3 py-1.5 rounded-lg bg-amber-900/40 text-amber-200 border border-amber-700 flex items-center gap-1"><span class="material-symbols-outlined text-xs">groups</span>Team topologies</button>
+                    <button onclick="pomToggleLayer('residuality')" class="pom-mode-btn px-3 py-1.5 rounded-lg bg-rose-900/40 text-rose-200 border border-rose-700 flex items-center gap-1"><span class="material-symbols-outlined text-xs">warning</span>Residuality</button>
+                </div>
+            </div>
+            <div class="max-w-7xl mx-auto glass-panel rounded-3xl overflow-hidden shadow-xl relative h-[680px] diagram-shell">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 z-20">
+                    <div class="bg-white/10 border border-white/25 rounded-full w-24 h-24 flex flex-col items-center justify-center text-center shadow-lg">
+                        <span class="material-symbols-outlined text-2xl text-white">person</span>
+                        <span class="text-[10px] text-white font-semibold leading-tight mt-1">Customer<br>Value</span>
+                    </div>
+                </div>
+                <div id="pom-info-overlay" class="absolute top-6 left-6 z-20 max-w-xs opacity-0 transition-opacity duration-300">
+                    <div class="glass-panel rounded-xl p-4 border-l-4 border-blue-500 bg-slate-900/95">
+                        <h4 id="pom-info-title" class="text-sm font-semibold text-slate-50 mb-1">Track</h4>
+                        <p id="pom-info-desc" class="text-xs text-slate-300">Description.</p>
+                    </div>
+                </div>
+                <div id="pom-flow-diagram" class="w-full h-full"></div>
+            </div>
+            <div class="max-w-7xl mx-auto mt-6 px-4 flex flex-wrap gap-2 text-xs">
+                <span class="text-slate-400 mr-2">System behavioral mode:</span>
+                <button onclick="pomToggleBehaviorMode('adaptive')" class="px-3 py-1.5 rounded-lg bg-emerald-900/50 border border-emerald-600 text-emerald-200">Adaptive</button>
+                <button onclick="pomToggleBehaviorMode('reinforced')" class="px-3 py-1.5 rounded-lg bg-blue-900/50 border border-blue-600 text-blue-200">Reinforced</button>
+                <button onclick="pomToggleBehaviorMode('overloaded')" class="px-3 py-1.5 rounded-lg bg-yellow-900/50 border border-yellow-500 text-yellow-100">Overloaded</button>
+                <button onclick="pomToggleBehaviorMode('fragile')" class="px-3 py-1.5 rounded-lg bg-red-900/50 border border-red-600 text-red-200">Fragile</button>
+            </div>
+        </section>
+
+        <section class="bg-slate-950 py-16" id="context-stress">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="glass-panel rounded-2xl p-7">
+                    <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-semibold text-slate-50">Context stress map – residual exposure</h3>
+                            <p class="text-xs md:text-sm text-slate-300 max-w-2xl mt-1">Residual exposure shows how much risk is not yet absorbed by architecture, team practices, and platform capabilities.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 text-[11px] text-slate-400">
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Adaptive</div>
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Reinforced</div>
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-yellow-400"></span> Overloaded</div>
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-500"></span> Fragile</div>
+                        </div>
+                    </div>
+                    <div id="context-stress-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+                    <p class="text-[11px] text-slate-400 mt-4">Residual exposure (0–1) highlights where the system amplifies uncertainty and where platform/enabling interventions have the strongest effect.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- STA VIEW -->
+    <div id="sta-view" class="view-container">
+        <header class="relative min-h-[70vh] flex flex-col justify-center items-center overflow-hidden px-6 hero-gradient">
+            <div class="relative max-w-5xl mx-auto text-center z-10">
+                <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-purple-500/40 bg-purple-500/10 mb-5">
+                    <span class="material-symbols-outlined text-sm text-purple-300">layers</span>
+                    <span class="text-xs tracking-[0.18em] uppercase text-purple-200">System Architecture · Team Topologies · Residuality Theory</span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Socio-Technical <span class="text-gradient">Architecture</span></h1>
+                <p class="text-lg md:text-xl text-slate-200 font-light mb-6 max-w-3xl mx-auto">Organization and software architecture are one system. Five layers, four team types, continuous feedback loops, and Residuality Theory guide how we build and operate.</p>
+                <div class="glass-panel rounded-2xl p-6 border-l-4 border-purple-500 text-left max-w-3xl mx-auto">
+                    <h2 class="text-base font-semibold text-slate-50 mb-2 flex items-center gap-2"><span class="material-symbols-outlined text-purple-300 text-lg">architecture</span>Conway's Law, inverted</h2>
+                    <p class="text-slate-200 text-sm leading-relaxed">We deliberately design bounded contexts and team boundaries together so that communication flows match value flows. Platform and enabling teams reduce cognitive load.</p>
+                </div>
+                <div class="mt-8"><span class="material-symbols-outlined text-2xl text-slate-500 animate-bounce">expand_more</span></div>
+            </div>
+        </header>
+
+        <section class="py-16 px-4 bg-[#020617]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-semibold mb-2">Five-Layer Architecture Model</h2>
+                    <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base">From customer-facing business contexts to foundational technical platform. Each layer reduces cognitive load for the layer above it.</p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3 mb-7">
+                    <button onclick="staSetMode('standard')" class="sta-mode-btn px-4 py-2 rounded-full bg-slate-800 text-slate-200 text-xs md:text-sm border border-slate-600">Standard view</button>
+                    <button onclick="staSetMode('ddo')" class="sta-mode-btn px-4 py-2 rounded-full bg-slate-900 text-blue-200 text-xs md:text-sm border border-blue-700 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">sync_alt</span>DDO tracks</button>
+                    <button onclick="staSetMode('teams')" class="sta-mode-btn px-4 py-2 rounded-full bg-slate-900 text-amber-200 text-xs md:text-sm border border-amber-700 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">groups</span>Team topologies</button>
+                    <button onclick="staSetMode('residuality')" class="sta-mode-btn px-4 py-2 rounded-full bg-slate-900 text-rose-200 text-xs md:text-sm border border-rose-700 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">warning</span>Residuality overlay</button>
+                </div>
+                <div class="relative w-full max-w-7xl mx-auto glass-panel rounded-3xl overflow-hidden shadow-xl diagram-shell">
+                    <div class="absolute right-6 top-6 z-20">
+                        <div class="rounded-2xl bg-emerald-500/10 border border-emerald-400/60 px-5 py-4 flex items-center gap-3 shadow-xl">
+                            <div class="bg-white/10 rounded-full w-12 h-12 flex items-center justify-center"><span class="material-symbols-outlined text-2xl text-white">person</span></div>
+                            <div><span class="text-xs text-slate-300">Anchored on</span><p class="text-sm font-semibold text-white">Customer Value & Outcomes</p></div>
+                        </div>
+                    </div>
+                    <div id="sta-info-overlay" class="relative top-6 left-6 max-w-sm bg-slate-900/95 glass-panel rounded-xl p-4 border border-slate-700 z-20">
+                        <h3 id="sta-overlay-title" class="text-sm font-semibold text-slate-50 mb-1">Five-layer architecture</h3>
+                        <p id="sta-overlay-desc" class="text-xs text-slate-300 leading-relaxed">Click any layer or use the mode buttons above to explore team topologies, DDO integration, and Residuality overlays.</p>
+                    </div>
+                    <div id="sta-arch-diagram" class="w-full h-[620px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-12 px-4 bg-slate-950">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-semibold text-center mb-6">Context Map + Layer Ownership</h2>
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl p-4 md:p-6">
+                    <div id="sta-context-map" class="w-full h-[760px]"></div>
+                </div>
+                <div id="sta-context-detail" class="mt-6 opacity-0 transition-all duration-500 transform translate-y-4">
+                    <div class="glass-panel rounded-2xl p-6 border border-slate-700/70">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-2xl">domain</span></div>
+                                <div>
+                                    <h3 id="ctx-detail-title" class="text-xl font-bold text-slate-100">Select a Context</h3>
+                                    <p id="ctx-detail-subtitle" class="text-sm text-slate-400">Click any context in the map above</p>
+                                </div>
+                            </div>
+                            <button onclick="closeContextDetail()" class="text-slate-500 hover:text-slate-300 transition" aria-label="Close context detail"><span class="material-symbols-outlined">close</span></button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                                <div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-amber-400 text-sm">groups</span><h4 class="font-semibold text-amber-300 text-sm">Team</h4></div>
+                                <p id="ctx-detail-team" class="text-sm text-slate-200">—</p>
+                                <p id="ctx-detail-topology" class="text-xs text-slate-400 mt-1">—</p>
+                            </div>
+                            <div class="bg-blue-500/10 rounded-xl p-4 border border-blue-500/30"><div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-blue-400 text-sm">search</span><h4 class="font-semibold text-blue-300 text-sm">Discovery</h4></div><p id="ctx-detail-discovery" class="text-xs text-slate-300">—</p></div>
+                            <div class="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/30"><div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-emerald-400 text-sm">rocket_launch</span><h4 class="font-semibold text-emerald-300 text-sm">Delivery</h4></div><p id="ctx-detail-delivery" class="text-xs text-slate-300">—</p></div>
+                            <div class="bg-pink-500/10 rounded-xl p-4 border border-pink-500/30"><div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-pink-400 text-sm">monitoring</span><h4 class="font-semibold text-pink-300 text-sm">Operations</h4></div><p id="ctx-detail-operations" class="text-xs text-slate-300">—</p></div>
+                        </div>
+                        <div class="mt-4 p-3 bg-slate-900/50 rounded-lg border border-slate-700/50"><p class="text-xs text-slate-400"><span class="text-rose-400 font-medium">Feedback Loops:</span> <span id="ctx-detail-loops">—</span></p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- POV VIEW -->
+    <div id="pov-view" class="view-container">
+        <header class="relative min-h-[70vh] flex flex-col justify-center items-center overflow-hidden px-6 hero-gradient">
+            <div class="relative max-w-5xl mx-auto text-center z-10">
+                <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-amber-500/40 bg-amber-500/10 mb-5">
+                    <span class="material-symbols-outlined text-sm text-amber-300">visibility</span>
+                    <span class="text-xs tracking-[0.18em] uppercase text-amber-200">Sociotechnical Lenses · Role Perspectives · System Contributions</span>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Role <span class="text-gradient">POV Model</span></h1>
+                <p class="text-lg md:text-xl text-slate-200 font-light mb-6 max-w-3xl mx-auto">Each role acts on the three tracks (Discovery–Delivery–Operations) and contributes to the system's residuality—becoming stronger through stress.</p>
+                <div class="glass-panel rounded-2xl p-6 border-l-4 border-amber-500 text-left max-w-3xl mx-auto">
+                    <h2 class="text-base font-semibold text-slate-50 mb-2 flex items-center gap-2"><span class="material-symbols-outlined text-amber-300 text-lg">diversity_3</span>Roles own feedback loops, not tasks</h2>
+                    <p class="text-slate-200 text-sm leading-relaxed">Product Managers reduce unknown unknowns. Engineers eliminate fragility. Platform teams shield others from complexity. Each role leaves the system stronger than they found it.</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="py-12 px-4 bg-[#020617]">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-semibold mb-2">How Roles Shape the System</h2>
+                    <p class="text-slate-400 text-sm max-w-2xl mx-auto">Click any role to see their activities per track. Residuality accumulates through insight, feasibility, and stability loops.</p>
+                </div>
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl p-6">
+                    <svg id="pov-system-diagram" viewBox="0 0 1200 520" class="w-full h-[420px]">
+                        <defs>
+                            <linearGradient id="pov-grad-disc" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.15"></stop>
+                                <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.30"></stop>
+                            </linearGradient>
+                            <linearGradient id="pov-grad-del" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#10b981" stop-opacity="0.15"></stop>
+                                <stop offset="100%" stop-color="#34d399" stop-opacity="0.30"></stop>
+                            </linearGradient>
+                            <linearGradient id="pov-grad-ops" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#ec4899" stop-opacity="0.15"></stop>
+                                <stop offset="100%" stop-color="#f472b6" stop-opacity="0.30"></stop>
+                            </linearGradient>
+                            <marker id="pov-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"></path></marker>
+                            <marker id="pov-arrow-pink" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#f472b6"></path></marker>
+                        </defs>
+                        <rect x="50" y="50" width="350" height="390" rx="16" fill="url(#pov-grad-disc)" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.4"></rect>
+                        <text x="225" y="85" fill="#93c5fd" font-size="20" font-weight="700" text-anchor="middle">Discovery</text>
+                        <rect x="425" y="50" width="350" height="390" rx="16" fill="url(#pov-grad-del)" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.4"></rect>
+                        <text x="600" y="85" fill="#6ee7b7" font-size="20" font-weight="700" text-anchor="middle">Delivery</text>
+                        <rect x="800" y="50" width="350" height="390" rx="16" fill="url(#pov-grad-ops)" stroke="#ec4899" stroke-width="1.5" stroke-opacity="0.4"></rect>
+                        <text x="975" y="85" fill="#f9a8d4" font-size="20" font-weight="700" text-anchor="middle">Operations</text>
+                        <g id="role-pm" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('pm')" data-focusable="true"><circle cx="150" cy="180" r="40" fill="rgba(59,130,246,0.25)" stroke="#3b82f6" stroke-width="2.5"></circle><text x="150" y="175" fill="#bfdbfe" font-size="11" font-weight="600" text-anchor="middle">Product</text><text x="150" y="190" fill="#bfdbfe" font-size="11" font-weight="600" text-anchor="middle">Manager</text></g>
+                        <g id="role-designer" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('designer')" data-focusable="true"><circle cx="300" cy="230" r="35" fill="rgba(59,130,246,0.25)" stroke="#3b82f6" stroke-width="2.5"></circle><text x="300" y="225" fill="#bfdbfe" font-size="10" font-weight="600" text-anchor="middle">Product</text><text x="300" y="240" fill="#bfdbfe" font-size="10" font-weight="600" text-anchor="middle">Designer</text></g>
+                        <g id="role-ptl" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('ptl')" data-focusable="true"><circle cx="200" cy="320" r="38" fill="rgba(59,130,246,0.25)" stroke="#3b82f6" stroke-width="2.5"></circle><text x="200" y="315" fill="#bfdbfe" font-size="10" font-weight="600" text-anchor="middle">Product</text><text x="200" y="330" fill="#bfdbfe" font-size="10" font-weight="600" text-anchor="middle">Tech Lead</text></g>
+                        <g id="role-eng" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('eng')" data-focusable="true"><circle cx="520" cy="190" r="42" fill="rgba(16,185,129,0.25)" stroke="#10b981" stroke-width="2.5"></circle><text x="520" y="185" fill="#a7f3d0" font-size="11" font-weight="600" text-anchor="middle">Engineer</text><text x="520" y="200" fill="#a7f3d0" font-size="11" font-weight="600" text-anchor="middle">(FE/BE)</text></g>
+                        <g id="role-platform" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('platform')" data-focusable="true"><circle cx="700" cy="250" r="38" fill="rgba(6,182,212,0.25)" stroke="#06b6d4" stroke-width="2.5"></circle><text x="700" y="245" fill="#a5f3fc" font-size="10" font-weight="600" text-anchor="middle">Platform</text><text x="700" y="260" fill="#a5f3fc" font-size="10" font-weight="600" text-anchor="middle">Team</text></g>
+                        <g id="role-qa" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('qa')" data-focusable="true"><circle cx="540" cy="330" r="32" fill="rgba(168,85,247,0.25)" stroke="#a855f7" stroke-width="2.5"></circle><text x="540" y="326" fill="#e9d5ff" font-size="10" font-weight="600" text-anchor="middle">QA</text><text x="540" y="340" fill="#e9d5ff" font-size="10" font-weight="600" text-anchor="middle">Enablement</text></g>
+                        <g id="role-staff" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('staff')" data-focusable="true"><circle cx="660" cy="370" r="34" fill="rgba(168,85,247,0.25)" stroke="#a855f7" stroke-width="2.5"></circle><text x="660" y="365" fill="#e9d5ff" font-size="10" font-weight="600" text-anchor="middle">Staff+</text><text x="660" y="380" fill="#e9d5ff" font-size="10" font-weight="600" text-anchor="middle">Engineer</text></g>
+                        <g id="role-servicedesk" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('servicedesk')" data-focusable="true"><circle cx="900" cy="190" r="36" fill="rgba(236,72,153,0.25)" stroke="#ec4899" stroke-width="2.5"></circle><text x="900" y="185" fill="#fbcfe8" font-size="10" font-weight="600" text-anchor="middle">Service</text><text x="900" y="200" fill="#fbcfe8" font-size="10" font-weight="600" text-anchor="middle">Desk</text></g>
+                        <g id="role-data" class="cursor-pointer pov-role-bubble" onclick="povShowRoleActivities('data')" data-focusable="true"><circle cx="1050" cy="270" r="40" fill="rgba(6,182,212,0.25)" stroke="#06b6d4" stroke-width="2.5"></circle><text x="1050" y="265" fill="#a5f3fc" font-size="10" font-weight="600" text-anchor="middle">Data</text><text x="1050" y="280" fill="#a5f3fc" font-size="10" font-weight="600" text-anchor="middle">Platform</text></g>
+                        <path d="M 380 360 Q 420 420 480 360" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#pov-arrow)"></path>
+                        <text x="420" y="415" fill="#94a3b8" font-size="10" text-anchor="middle">Feasibility</text>
+                        <path d="M 780 360 Q 820 420 880 360" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#pov-arrow)"></path>
+                        <text x="820" y="415" fill="#94a3b8" font-size="10" text-anchor="middle">Stability</text>
+                        <path d="M 1020 400 Q 600 500 180 400" fill="none" stroke="#f472b6" stroke-width="2.5" stroke-dasharray="8 5" marker-end="url(#pov-arrow-pink)"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="4s" repeatCount="indefinite"></animate></path>
+                        <text x="600" y="435" fill="#f9a8d4" font-size="12" font-weight="600" text-anchor="middle">Insight Loop — Ops feeds Discovery</text>
+                        <rect x="50" y="460" width="1100" height="40" rx="10" fill="rgba(251,113,133,0.12)" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="6 4"></rect>
+                        <text x="600" y="486" fill="#fda4af" font-size="13" font-weight="700" text-anchor="middle">Residuality Accumulation — each cycle leaves the system stronger</text>
+                    </svg>
+                </div>
+                <div id="pov-role-detail" class="mt-6 opacity-0 transition-all duration-500 transform translate-y-4">
+                    <div class="glass-panel rounded-2xl p-6 border border-slate-700/70">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div id="pov-detail-icon" class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-2xl">person</span></div>
+                                <div><h3 id="pov-detail-title" class="text-xl font-bold text-slate-100">Select a Role</h3><p id="pov-detail-subtitle" class="text-sm text-slate-400">Click any role in the diagram above</p></div>
+                            </div>
+                            <button onclick="povCloseRoleDetail()" class="text-slate-500 hover:text-slate-300 transition" aria-label="Close role detail"><span class="material-symbols-outlined">close</span></button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-blue-500/10 rounded-xl p-4 border border-blue-500/30"><div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-blue-400">search</span><h4 class="font-semibold text-blue-300">Discovery</h4></div><div id="pov-detail-discovery" class="space-y-2 text-sm"><p class="text-slate-400 italic">Select a role to see activities</p></div></div>
+                            <div class="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/30"><div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-emerald-400">rocket_launch</span><h4 class="font-semibold text-emerald-300">Delivery</h4></div><div id="pov-detail-delivery" class="space-y-2 text-sm"><p class="text-slate-400 italic">Select a role to see activities</p></div></div>
+                            <div class="bg-pink-500/10 rounded-xl p-4 border border-pink-500/30"><div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-pink-400">monitoring</span><h4 class="font-semibold text-pink-300">Operations</h4></div><div id="pov-detail-operations" class="space-y-2 text-sm"><p class="text-slate-400 italic">Select a role to see activities</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-8 px-4 bg-[#020617]">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-wrap justify-center gap-3 mb-2">
+                    <span class="text-slate-400 text-sm mr-2 self-center">Filter by team type:</span>
+                    <button onclick="povFilterRoles('all', event)" class="pov-filter-btn px-4 py-2 rounded-full bg-slate-800 text-slate-200 text-xs border border-slate-600 active">All Roles</button>
+                    <button onclick="povFilterRoles('stream', event)" class="pov-filter-btn px-4 py-2 rounded-full bg-blue-900/40 text-blue-200 text-xs border border-blue-700">Stream-Aligned</button>
+                    <button onclick="povFilterRoles('platform', event)" class="pov-filter-btn px-4 py-2 rounded-full bg-cyan-900/40 text-cyan-200 text-xs border border-cyan-700">Platform</button>
+                    <button onclick="povFilterRoles('enabling', event)" class="pov-filter-btn px-4 py-2 rounded-full bg-purple-900/40 text-purple-200 text-xs border border-purple-700">Enabling</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-10 px-4 bg-slate-950">
+            <div class="max-w-7xl mx-auto">
+                <div id="pov-roles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-blue-500 hover:bg-slate-800/60 transition-all duration-300" data-team="stream">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-2xl">target</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Product Manager</h3><span class="text-xs text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full">Stream-Aligned</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Outcomes, not tickets.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Converts ambiguity into solvable slices. Translates signals from Ops into Discovery hypotheses.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-blue-400">•</span> Frame the problem, shape intent</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Avoid local optimization</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Guard outcome coherence across teams</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Reduces "unknown unknowns" by aligning intent, outcomes, and domain clarity.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-blue-500 hover:bg-slate-800/60 transition-all duration-300" data-team="stream">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-2xl">palette</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Product Designer</h3><span class="text-xs text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full">Stream-Aligned</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Reduce cognitive load for customers.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Converts intent into interactions that reduce effort and friction for end users.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-blue-400">•</span> Drive JTBD clarity</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Prototype early to eliminate wrong paths</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Maintain consistency via Design System</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Prevents accumulation of UX debt and interaction fragility.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-blue-500 hover:bg-slate-800/60 transition-all duration-300" data-team="stream">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-2xl">code</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Engineer (FE/BE)</h3><span class="text-xs text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full">Stream-Aligned</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Flow + Operability.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Converts intent into resilient behavior. Owns the quality of the production system.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-blue-400">•</span> Continuous delivery with feature flags</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Own async jobs, consistency, observability</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Participate in domain modeling</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Eliminates fragility through tests, IaC, and observability.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-blue-500 hover:bg-slate-800/60 transition-all duration-300" data-team="stream">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-2xl">architecture</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Product Tech Lead</h3><span class="text-xs text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full">Stream-Aligned</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Architectural integrity + domain strategy.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Maintains purity of boundaries. Prevents explosive coupling across bounded contexts.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-blue-400">•</span> Lead modeling and ADRs</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Prevent expensive reversals</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Ensure operability-first design</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Keeps bounded contexts healthy, limits systemic contagion.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-purple-500 hover:bg-slate-800/60 transition-all duration-300" data-team="enabling">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-purple-400 text-2xl">psychology</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Staff+ Engineer</h3><span class="text-xs text-purple-300 bg-purple-500/20 px-2 py-0.5 rounded-full">Enabling</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Reduce systemic complexity for others.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Works at inter-domain seams. Mentors, unblocks, and designs structure.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-purple-400">•</span> Decompose architecture</li><li class="flex gap-1.5"><span class="text-purple-400">•</span> Build paved roads and enablement patterns</li><li class="flex gap-1.5"><span class="text-purple-400">•</span> Perform large-scale refactoring</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Absorbs stressors that would overwhelm stream-aligned teams.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-cyan-500 hover:bg-slate-800/60 transition-all duration-300" data-team="platform">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-cyan-400 text-2xl">cloud</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Platform Team</h3><span class="text-xs text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded-full">Platform</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">X-as-a-Service.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Provides guardrails, not rules. Makes the happy path the easy path.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-cyan-400">•</span> IaC, pipelines, security, identity</li><li class="flex gap-1.5"><span class="text-cyan-400">•</span> CI/CD and paved roads</li><li class="flex gap-1.5"><span class="text-cyan-400">•</span> Observability and DevEx</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Shields product teams from infrastructure and compliance complexity.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-cyan-500 hover:bg-slate-800/60 transition-all duration-300" data-team="platform">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-cyan-400 text-2xl">database</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Data Platform</h3><span class="text-xs text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded-full">Platform</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Convert signals into intelligence.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Transforms raw stressors into usable knowledge. Bridges Operations and Discovery.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-cyan-400">•</span> Data contracts and lineage</li><li class="flex gap-1.5"><span class="text-cyan-400">•</span> DWH models and streaming</li><li class="flex gap-1.5"><span class="text-cyan-400">•</span> Metrics and governance as code</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Transforms operational chaos into clarity for Discovery.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-blue-500 hover:bg-slate-800/60 transition-all duration-300" data-team="stream">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-blue-400 text-2xl">support_agent</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">Service Desk</h3><span class="text-xs text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full">Stream-Aligned</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Early stressor detection.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">First line of anomaly identification. Sentinel for the Operations track.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-blue-400">•</span> Runbooks and triage</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Incident analysis</li><li class="flex gap-1.5"><span class="text-blue-400">•</span> Provide early warning signals</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Prevents small anomalies from escalating across domains.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="pov-role-card glass-panel rounded-2xl p-6 border-t-4 border-purple-500 hover:bg-slate-800/60 transition-all duration-300" data-team="enabling">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-purple-400 text-2xl">verified</span></div>
+                                <div><h3 class="text-lg font-bold text-slate-100">QA Enablement</h3><span class="text-xs text-purple-300 bg-purple-500/20 px-2 py-0.5 rounded-full">Enabling</span></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-amber-400 text-sm">star</span><span class="text-xs font-semibold text-amber-300 uppercase tracking-wide">North Star</span></div><p class="text-sm text-slate-200 font-medium">Quality as Flow, not as Gate.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-emerald-400 text-sm">settings_suggest</span><span class="text-xs font-semibold text-emerald-300 uppercase tracking-wide">System Role</span></div><p class="text-xs text-slate-300">Prevents defect propagation across tracks. Ensures quality is built in, not inspected out.</p></div>
+                            <div><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-slate-400 text-sm">checklist</span><span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Key Responsibilities</span></div><ul class="text-xs text-slate-400 space-y-1"><li class="flex gap-1.5"><span class="text-purple-400">•</span> Automated quality gates</li><li class="flex gap-1.5"><span class="text-purple-400">•</span> Risk-based testing strategies</li><li class="flex gap-1.5"><span class="text-purple-400">•</span> Enable testing practices across teams</li></ul></div>
+                            <div class="pt-3 border-t border-slate-700/50"><div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-rose-400 text-sm">shield</span><span class="text-xs font-semibold text-rose-300 uppercase tracking-wide">Residuality Contribution</span></div><p class="text-xs text-slate-300">Ensures Delivery doesn't inject fragility into Operations.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="py-10 bg-slate-950 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 text-center text-xs text-slate-500">
+            <div class="flex justify-center mb-2"><span class="text-gradient text-xl font-semibold">Galileo Platform</span></div>
+            <p>Lentes Galileo S.A.P.I. de C.V. – Unified Socio-Technical Framework</p>
+            <p class="mt-1 text-slate-600">Ways of Work · Product Operative Model · Socio-Technical Architecture · Role POV Model</p>
+            <p class="mt-1 text-slate-600">Discovery, Delivery and Operations · Team Topologies · Residuality Theory</p>
+        </div>
+    </footer>
+
+    <!-- Journey modal overlay -->
+    <div id="journey-step-overlay" class="overlay-backdrop overlay-hidden" aria-hidden="true">
+        <div id="journey-step-card" class="glass-panel rounded-2xl p-6 border-l-4 max-w-xl w-full transform -translate-y-3 transition-transform duration-200">
+            <div class="flex items-start justify-between mb-3">
+                <div>
+                    <h3 id="journey-step-title" class="text-xl font-semibold text-slate-100"></h3>
+                    <span id="journey-step-track-tag" class="px-3 py-1 text-xs font-semibold rounded-full tag-blue inline-block mt-2"></span>
+                </div>
+                <button aria-label="Close detail" onclick="hideJourneyStepDetail()" class="text-slate-400 hover:text-slate-200"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <p id="journey-step-description" class="text-sm text-slate-200 mb-3"></p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div class="bg-slate-800/60 rounded-xl p-3 border border-slate-700/60"><p class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">4ojos perspective</p><p id="journey-step-ojos" class="text-sm text-slate-200"></p></div>
+                <div class="bg-slate-800/60 rounded-xl p-3 border border-slate-700/60"><p class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">casimirx perspective</p><p id="journey-step-casimirx" class="text-sm text-slate-200"></p></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div><p class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Operational signals</p><ul id="journey-step-signals" class="text-sm text-slate-200 space-y-1"></ul></div>
+                <div><p class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Exceptions & failure modes</p><p id="journey-step-exceptions" class="text-sm text-slate-200"></p></div>
+            </div>
+            <div class="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/30"><p class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">DDO Contribution Map</p><p id="journey-step-contribution" class="text-sm text-slate-200"></p></div>
         </div>
     </div>
-</nav>
 
-<!-- ============================================= -->
-<!-- VIEW 1 – GALILEO WAYS OF WORK                -->
-<!-- ============================================= -->
-<div id="wow-view" class="view-container active">
+    <div id="diagram-tooltip" class="tooltip"></div>
 
-    <!-- HERO -->
-    <header class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden px-6">
-        <div class="absolute inset-0 bg-gradient-to-b from-[#020617] via-[#020617] to-[#020617]"></div>
-
-        <div class="relative max-w-5xl mx-auto text-center z-10">
-            <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-blue-500/40 bg-blue-500/10 mb-5">
-                <span class="material-symbols-outlined text-sm text-blue-300">apartment</span>
-                <span class="text-xs tracking-[0.18em] uppercase text-blue-200">
-                    Lentes Galileo S.A.P.I. de C.V. – Galileo Platform
-                </span>
-            </div>
-
-            <h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight">
-                Galileo <span class="text-gradient">Ways of Work</span>
-            </h1>
-
-            <p class="text-xl md:text-2xl text-slate-200 font-light mb-8 max-w-4xl mx-auto">
-                A socio technical continuous flow model where
-                <span class="font-semibold text-white">Discovery, Delivery, and Operations</span>
-                move in parallel, share information continuously, and adapt in real time to uncertainty.
-            </p>
-
-            <div class="glass-panel rounded-2xl p-7 border-l-4 border-blue-500 text-left">
-                <h2 class="text-lg font-semibold text-slate-50 mb-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-blue-300 text-xl">music_note</span>
-                    Executive metaphor – dance, not phases
-                </h2>
-                <p class="text-slate-200 text-sm md:text-base leading-relaxed">
-                    Working at Galileo is closer to dancing with the customer problem than following a rigid choreography.
-                    We do not work in a sequence like
-                    <span class="italic">first listen, then learn the rhythm, then try to dance</span>.
-                    Discovery, Delivery, and Operations must hear the music at the same time, react to each other,
-                    and adjust in short loops. That is how we reduce residual uncertainty and build resilient flows for
-                    e commerce, stores, lab and logistics in Mexico, Chile, and Colombia.
-                </p>
-            </div>
-
-            <div class="mt-10">
-                <span class="material-symbols-outlined text-3xl text-slate-500 animate-bounce">expand_more</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- CONTINUOUS FLOW ENGINE -->
-    <section class="py-16 px-4 bg-[#020617]">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl md:text-4xl font-semibold mb-2">Continuous Flow Engine</h2>
-                <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base">
-                    Discovery, Delivery, and Operations are three parallel tracks. They are never sequential.
-                    They run at different cadences, share information, and close feedback loops continuously.
-                    Use the modes below to highlight specific feedback loops or the Residuality Theory lens.
-                </p>
-            </div>
-
-            <!-- Modes -->
-            <div class="flex flex-wrap justify-center gap-3 mb-7">
-                <button onclick="wowSetMode('default')"
-                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-800 text-slate-200 text-xs md:text-sm border border-slate-600">
-                    Standard flow
-                </button>
-                <button onclick="wowSetMode('insight')"
-                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-blue-200 text-xs md:text-sm border border-blue-700 flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-xs">psychology</span>
-                    Insight loop
-                </button>
-                <button onclick="wowSetMode('stability')"
-                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-emerald-200 text-xs md:text-sm border border-emerald-700 flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-xs">health_and_safety</span>
-                    Stability loop
-                </button>
-                <button onclick="wowSetMode('residuality')"
-                        class="wow-mode-btn px-4 py-2 rounded-full bg-slate-900 text-purple-200 text-xs md:text-sm border border-purple-700 flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-xs">visibility</span>
-                    Residuality view
-                </button>
-            </div>
-
-            <!-- SVG diagram -->
-            <div class="relative w-full max-w-7xl mx-auto aspect-[16/9] glass-panel rounded-3xl overflow-hidden shadow-xl">
-               <div id="wow-info-overlay"
-                    class="absolute top-3 right-3 max-w-xs bg-slate-900/95 glass-panel rounded-xl p-4 border border-slate-700 z-20">
-                    <h3 id="wow-overlay-title" class="text-sm font-semibold text-slate-50 mb-1">
-                        Three parallel tracks
-                    </h3>
-                    <p id="wow-overlay-desc" class="text-xs text-slate-300 leading-relaxed">
-                        Discovery, Delivery, and Operations run in parallel. They exchange information through short loops,
-                        not through big handoffs.
-                    </p>
-                </div>
-
-                <svg id="wow-flow-diagram" viewBox="0 0 1200 675"
-                     class="absolute inset-0 w-full h-full">
-                    <defs>
-                        <pattern id="wow-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                            <path d="M 40 0 L 0 0 0 40"
-                                  fill="none"
-                                  stroke="rgba(148,163,184,0.14)"
-                                  stroke-width="1"/>
-                        </pattern>
-
-                        <linearGradient id="wow-grad-discovery" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.20"/>
-                            <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.35"/>
-                        </linearGradient>
-                        <linearGradient id="wow-grad-delivery" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#10b981" stop-opacity="0.20"/>
-                            <stop offset="100%" stop-color="#34d399" stop-opacity="0.35"/>
-                        </linearGradient>
-                        <linearGradient id="wow-grad-ops" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#f97373" stop-opacity="0.20"/>
-                            <stop offset="100%" stop-color="#fb7185" stop-opacity="0.35"/>
-                        </linearGradient>
-
-                        <marker id="wow-arrow-red" markerWidth="10" markerHeight="10"
-                                refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-                            <path d="M0,0 L0,6 L9,3 z" fill="#fb7185"/>
-                        </marker>
-
-                        <marker id="wow-arrow-green" markerWidth="10" markerHeight="10"
-                                refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-                            <path d="M0,0 L0,6 L9,3 z" fill="#22c55e"/>
-                        </marker>
-
-                        <linearGradient id="wow-fog-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
-                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-                        </linearGradient>
-                    </defs>
-
-                    <rect width="100%" height="100%" fill="url(#wow-grid)"/>
-
-                    <!-- Discovery track -->
-                    <g id="wow-track-discovery" class="cursor-pointer"
-                       onclick="wowShowDetail('discovery')">
-                        <path d="M -100,150 C 200,150 400,110 600,150 C 800,190 1000,150 1300,150"
-                              fill="none"
-                              stroke="url(#wow-grad-discovery)"
-                              stroke-width="64"
-                              stroke-opacity="0.22"/>
-                        <path d="M -100,150 C 200,150 400,110 600,150 C 800,190 1000,150 1300,150"
-                              fill="none"
-                              stroke="#60a5fa"
-                              stroke-width="3"
-                              stroke-dasharray="20 10"
-                              class="animate-flow-fast"/>
-                        <text x="90" y="108"
-                              fill="#bfdbfe"
-                              font-size="22"
-                              font-weight="600">
-                            A. Discovery · Clarify
-                        </text>
-                    </g>
-
-                    <!-- Delivery track -->
-                    <g id="wow-track-delivery" class="cursor-pointer"
-                       onclick="wowShowDetail('delivery')">
-                        <path d="M -100,337.5 C 200,337.5 400,387.5 600,337.5 C 800,287.5 1000,337.5 1300,337.5"
-                              fill="none"
-                              stroke="url(#wow-grad-delivery)"
-                              stroke-width="64"
-                              stroke-opacity="0.22"/>
-                        <path d="M -100,337.5 C 200,337.5 400,387.5 600,337.5 C 800,287.5 1000,337.5 1300,337.5"
-                              fill="none"
-                              stroke="#6ee7b7"
-                              stroke-width="3"
-                              stroke-dasharray="20 10"
-                              class="animate-flow-fast"
-                              style="animation-delay: -0.8s"/>
-                        <text x="90" y="305"
-                              fill="#bbf7d0"
-                              font-size="22"
-                              font-weight="600">
-                            B. Delivery · Build
-                        </text>
-                    </g>
-
-                    <!-- Operations track -->
-                    <g id="wow-track-ops" class="cursor-pointer"
-                       onclick="wowShowDetail('operations')">
-                        <path d="M -100,525 C 200,525 400,485 600,525 C 800,565 1000,525 1300,525"
-                              fill="none"
-                              stroke="url(#wow-grad-ops)"
-                              stroke-width="64"
-                              stroke-opacity="0.22"/>
-                        <path d="M -100,525 C 200,525 400,485 600,525 C 800,565 1000,525 1300,525"
-                              fill="none"
-                              stroke="#fecaca"
-                              stroke-width="3"
-                              stroke-dasharray="20 10"
-                              class="animate-flow-fast"
-                              style="animation-delay: -1.6s"/>
-                        <text x="90" y="493"
-                              fill="#fecaca"
-                              font-size="22"
-                              font-weight="600">
-                            C. Operations · Prove
-                        </text>
-                    </g>
-
-                    <!-- Feedback loops -->
-                    <g id="wow-loops-layer" class="transition-opacity duration-500 opacity-0">
-                        <!-- Ops -> Disc (Insight) -->
-                        <path d="M 640,505 Q 520,337.5 640,170"
-                              fill="none"
-                              stroke="#fb7185"
-                              stroke-width="2"
-                              stroke-dasharray="6 6"
-                              marker-end="url(#wow-arrow-red)">
-                            <animate attributeName="stroke-dashoffset"
-                                     from="120" to="0"
-                                     dur="2s"
-                                     repeatCount="indefinite"/>
-                        </path>
-
-                        <!-- Del -> Disc (Feasibility) -->
-                        <path d="M 760,317 Q 680,240 760,165"
-                              fill="none"
-                              stroke="#22c55e"
-                              stroke-width="2"
-                              stroke-dasharray="6 6"
-                              marker-end="url(#wow-arrow-green)">
-                            <animate attributeName="stroke-dashoffset"
-                                     from="120" to="0"
-                                     dur="2s"
-                                     repeatCount="indefinite"/>
-                        </path>
-
-                        <!-- Ops -> Del (Stability) -->
-                        <path d="M 520,357 Q 600,430 520,505"
-                              fill="none"
-                              stroke="#22c55e"
-                              stroke-width="2"
-                              stroke-dasharray="6 6"
-                              marker-end="url(#wow-arrow-green)">
-                            <animate attributeName="stroke-dashoffset"
-                                     from="120" to="0"
-                                     dur="2s"
-                                     repeatCount="indefinite"/>
-                        </path>
-                    </g>
-
-                    <!-- Residuality overlay -->
-                    <g id="wow-residuality-layer" class="transition-opacity duration-500 opacity-0">
-                        <rect x="0" y="80" width="1200" height="80"
-                              fill="url(#wow-fog-gradient)"
-                              opacity="0.16"/>
-                        <text x="80" y="110" fill="#fca5a5" font-size="12">
-                            Unknown unknowns – early Discovery and real life constraints
-                        </text>
-
-                        <circle cx="260" cy="345" r="8" fill="#fb7185" class="animate-soft-pulse"/>
-                        <circle cx="310" cy="355" r="6" fill="#fb7185" class="animate-soft-pulse" style="animation-delay:0.3s"/>
-                        <circle cx="290" cy="375" r="7" fill="#fb7185" class="animate-soft-pulse" style="animation-delay:0.6s"/>
-
-                        <text x="248" y="330" fill="#fecaca" font-size="10">
-                            Stressors
-                        </text>
-                    </g>
-                </svg>
-            </div>
-
-            <div class="mt-4 flex justify-between text-[11px] text-slate-400">
-                <span>Figure 1 – Continuous DDO flow for Galileo Platform</span>
-                <span>Click each track to highlight its role</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- TRACK DETAILS -->
-    <section class="py-18 bg-slate-950">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-3xl md:text-4xl font-semibold mb-12 text-center">
-                Three parallel tracks, one <span class="text-gradient">customer value stream</span>
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Discovery -->
-                <article class="glass-panel rounded-2xl p-7 border-t-4 border-blue-500 reveal-on-scroll">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xl font-semibold text-blue-200 flex items-center gap-2">
-                            <span class="material-symbols-outlined">explore</span>
-                            Discovery
-                        </h3>
-                        <span class="text-[11px] text-slate-400 uppercase tracking-wide">
-                            Clarify problem and context
-                        </span>
-                    </div>
-                    <p class="text-sm text-slate-200 mb-4">
-                        Discovery reduces uncertainty enough so that a decision is possible. It does not try to know everything.
-                        It clarifies the problem, constraints, and impacts with real context from stores, lab and customers.
-                    </p>
-                    <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
-                        <li>• Archetypes, personas, Jobs to Be Done, context of use</li>
-                        <li>• Explicit assumptions and hypotheses</li>
-                        <li>• Problem framing, opportunity and impact</li>
-                        <li>• Domain modeling: EventStorming, Domain Storytelling</li>
-                        <li>• Early feasibility and viability checks</li>
-                        <li>• Draft SLIs and SLOs for what success means</li>
-                    </ul>
-                    <p class="text-[12px] text-slate-400">
-                        Feeds Delivery with clarified scope and constraints. Receives operational reality from Operations to refine assumptions.
-                    </p>
-                </article>
-
-                <!-- Delivery -->
-                <article class="glass-panel rounded-2xl p-7 border-t-4 border-emerald-500 reveal-on-scroll">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xl font-semibold text-emerald-200 flex items-center gap-2">
-                            <span class="material-symbols-outlined">code</span>
-                            Delivery
-                        </h3>
-                        <span class="text-[11px] text-slate-400 uppercase tracking-wide">
-                            Build operable solutions
-                        </span>
-                    </div>
-                    <p class="text-sm text-slate-200 mb-4">
-                        Delivery creates solutions that are ready to live in production. It balances speed, safety, and technical coherence for Odoo, PoS, lab, logistics and data.
-                    </p>
-                    <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
-                        <li>• Delivery modes: greenfield, brownfield, strangler, firefighting</li>
-                        <li>• Threat modeling, spikes, PoCs</li>
-                        <li>• Sacrificial architecture when learning is the main goal</li>
-                        <li>• Architecture coherence and Well Architected principles</li>
-                        <li>• Fitness functions and living documentation</li>
-                        <li>• Observability instrumentation and quality gates</li>
-                    </ul>
-                    <p class="text-[12px] text-slate-400">
-                        Works with Discovery to adjust feasibility and constraints. Works with Operations to protect error budgets and resilience.
-                    </p>
-                </article>
-
-                <!-- Operations -->
-                <article class="glass-panel rounded-2xl p-7 border-t-4 border-red-500 reveal-on-scroll">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xl font-semibold text-rose-200 flex items-center gap-2">
-                            <span class="material-symbols-outlined">monitor_heart</span>
-                            Operations
-                        </h3>
-                        <span class="text-[11px] text-slate-400 uppercase tracking-wide">
-                            Prove value in reality
-                        </span>
-                    </div>
-                    <p class="text-sm text-slate-200 mb-4">
-                        Operations is where the system meets customers, stores and lab. It reveals what really happens: value, bottlenecks, and fragility.
-                    </p>
-                    <ul class="text-[12px] text-slate-300 space-y-1.5 mb-4">
-                        <li>• Error budgets, SLI and SLO tracking</li>
-                        <li>• Incident detection, triage and resolution</li>
-                        <li>• User behavior and operational load tracking</li>
-                        <li>• A B testing and impact measurement</li>
-                        <li>• Data quality, contracts and lifecycle</li>
-                        <li>• Resilience testing and failure analysis</li>
-                    </ul>
-                    <p class="text-[12px] text-slate-400">
-                        Feeds Delivery with new insights and constraints. Feeds Operations with performance, reliability and regression patterns.
-                    </p>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- CUSTOMER VALUE STREAM JOURNEY -->
-    <section class="py-18 bg-[#020617]">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-3xl md:text-4xl font-semibold mb-10 text-center">
-                <span class="text-gradient">Customer Value Stream</span> Journey
-            </h2>
-            <p class="text-slate-300 max-w-2xl mx-auto text-center text-sm md:text-base mb-12">
-                End-to-end flow from the perspective of 4ojos (customer) and casimirx (store and lab operators).
-                This journey is the central driver of our work. It is not a linear process, but a continuous flow of value creation and feedback.
-                Discovery clarifies the path, Delivery builds the means of travel, and Operations ensures the journey is smooth and reliable.
-                The three tracks synchronize constantly to adapt to the customer's real-world needs and context.
-            </p>
-
-            <!-- Stages of the Journey -->
-            <h3 class="text-2xl font-semibold text-center mb-6">Customer Journey Stages</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-blue-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-blue-400 text-2xl">campaign</span>
-                        <h4 class="text-xl font-semibold text-slate-100">Acquisition</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Sees an ad or gets a referral</p>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-emerald-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-emerald-400 text-2xl">eyeglasses</span>
-                        <h4 class="text-xl font-semibold text-slate-100">Look Good</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Explores & chooses frames</p>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-purple-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-purple-400 text-2xl">visibility</span>
-                        <h4 class="text-xl font-semibold text-slate-100">See Well</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Gets an eye exam in-store</p>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-amber-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-amber-400 text-2xl">shopping_cart</span>
-                        <h4 class="text-xl font-semibold text-slate-100">Decide on Us</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Makes the purchase at the PoS</p>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-rose-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-rose-400 text-2xl">receipt_long</span>
-                        <h4 class="text-xl font-semibold text-slate-100">Get Receipts</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Receives confirmation, requests invoice</p>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-cyan-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-cyan-400 text-2xl">precision_manufacturing</span>
-                        <h4 class="text-xl font-semibold text-slate-100">Quality & Progress</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Lenses are crafted and pass QC</p>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-indigo-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-indigo-400 text-2xl">local_shipping</span>
-                        <h4 class="text-xl font-semibold text-slate-100">Track Your Order</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Checks status and receives the order</p>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-t-4 border-lime-500 reveal-on-scroll">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="material-symbols-outlined text-lime-400 text-2xl">sentiment_very_satisfied</span>
-                        <h4 class="text-xl font-semibold text-slate-100">Enjoy Product</h4>
-                    </div>
-                    <p class="text-sm text-slate-300">• Uses product with support & warranty</p>
-                </div>
-            </div>
-
-            <!-- Moments of Truth -->
-            <h3 class="text-2xl md:text-3xl font-semibold mb-8 text-center">Moments of Truth</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div class="glass-panel rounded-2xl p-6 border-l-4 border-blue-400 reveal-on-scroll">
-                    <h4 class="text-xl font-semibold text-blue-300 mb-2">1. Frame Selection</h4>
-                    <p class="text-sm text-slate-200"><strong>4ojos:</strong> "I found a style that represents me." It's a moment of identity and self-expression.</p>
-                    <p class="text-sm text-slate-200 mt-2"><strong>casimirx:</strong> "Inventory and display generated a sale." It's the conversion from interest to desire.</p>
-                    <span class="inline-block mt-4 text-xs font-bold text-blue-200 bg-blue-500/20 px-3 py-1 rounded-full">Discovery</span>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-l-4 border-emerald-400 reveal-on-scroll">
-                    <h4 class="text-xl font-semibold text-emerald-300 mb-2">2. Purchase Confirmation</h4>
-                    <p class="text-sm text-slate-200"><strong>4ojos:</strong> "My payment was successful and I know what to expect." It builds security and trust.</p>
-                    <p class="text-sm text-slate-200 mt-2"><strong>casimirx:</strong> "The transaction is firm and the order is created in Odoo without errors." System integrity.</p>
-                    <span class="inline-block mt-4 text-xs font-bold text-emerald-200 bg-emerald-500/20 px-3 py-1 rounded-full">Operations</span>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-l-4 border-rose-400 reveal-on-scroll">
-                    <h4 class="text-xl font-semibold text-rose-300 mb-2">3. Delivery and Product Unboxing</h4>
-                    <p class="text-sm text-slate-200"><strong>4ojos:</strong> "It arrived on time and I can see perfectly." It's the fulfillment of the value promise.</p>
-                    <p class="text-sm text-slate-200 mt-2"><strong>casimirx:</strong> "The cycle is complete, the customer is satisfied, and may return." Retention and loyalty.</p>
-                    <span class="inline-block mt-4 text-xs font-bold text-rose-200 bg-rose-500/20 px-3 py-1 rounded-full">Delivery Operations</span>
-                </div>
-            </div>
-
-            <!-- Alternative Paths & Exceptions -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                <div class="glass-panel rounded-2xl p-6 border-l-4 border-orange-400 reveal-on-scroll">
-                    <h3 class="text-2xl font-semibold text-orange-300 mb-4">Alternative Paths & Exceptions</h3>
-                    <h4 class="text-xl font-semibold text-orange-200 mb-3">Common Alternative Paths</h4>
-                    <ul class="text-sm text-slate-300 space-y-2">
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-orange-400">arrow_right_alt</span> <strong>Prescription Issues:</strong> <span class="text-blue-300">Delivery</span></li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-orange-400">arrow_right_alt</span> <strong>Payment Failures:</strong> <span class="text-emerald-300">Ops</span></li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-orange-400">arrow_right_alt</span> <strong>Variant Unavailability:</strong> <span class="text-blue-300">Discovery</span></li>
-                    </ul>
-                    <h4 class="text-xl font-semibold text-orange-200 mt-6 mb-3">High-Friction Exceptions</h4>
-                    <ul class="text-sm text-slate-300 space-y-2">
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-rose-400">cancel</span> <strong>Manufacturing Delays:</strong> <span class="text-emerald-300">Delivery</span></li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-rose-400">cancel</span> <strong>Shipping Misrouting:</strong> <span class="text-emerald-300">Ops</span></li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-rose-400">cancel</span> <strong>Odoo Constraint Errors:</strong> <span class="text-emerald-300">Ops</span></li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-rose-400">cancel</span> <strong>Lab Rejects:</strong> <span class="text-emerald-300">Ops</span></li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-rose-400">cancel</span> <strong>Remake Flows:</strong> <span class="text-emerald-300">Delivery</span></li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-rose-400">cancel</span> <strong>QC Failures:</strong> <span class="text-emerald-300">Delivery</span></li>
-                    </ul>
-                </div>
-                <div class="glass-panel rounded-2xl p-6 border-l-4 border-red-400 reveal-on-scroll">
-                    <h3 class="text-2xl font-semibold text-red-300 mb-4">Operational Escalations</h3>
-                    <p class="text-sm text-slate-300">
-                        These are scenarios where the system is under significant stress, and require a higher degree of coordination and resolution effort.
-                        Understanding these points helps us design more resilient systems and processes.
-                    </p>
-                    <ul class="text-sm text-slate-300 space-y-2 mt-4">
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400">warning</span> High Volume Incident</li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400">warning</span> Critical System Downtime</li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400">warning</span> Data Inconsistency Alert</li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400">warning</span> Security Breach</li>
-                        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400">warning</span> Regulatory Compliance Failure</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- DDO Integration Map -->
-            <h3 class="text-2xl md:text-3xl font-semibold mb-8 text-center mt-12">Diagram → DDO Integration Map</h3>
-            <div class="glass-panel rounded-2xl p-6 reveal-on-scroll">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left table-auto">
-                        <thead>
-                            <tr class="border-b border-slate-700">
-                                <th class="py-2 pr-4 text-sm font-semibold text-slate-300">Customer Step</th>
-                                <th class="py-2 px-4 text-sm font-semibold text-slate-300">Primary DDO Track</th>
-                                <th class="py-2 pl-4 text-sm font-semibold text-slate-300">Supporting Team Topology</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-slate-800">
-                                <td class="py-2 pr-4 text-sm text-slate-400">Acquisition / Explore & Choose</td>
-                                <td class="py-2 px-4 text-sm text-blue-300">Discovery</td>
-                                <td class="py-2 pl-4 text-sm text-slate-400">Stream-Aligned (CommerceFlow)</td>
-                            </tr>
-                            <tr class="border-b border-slate-800">
-                                <td class="py-2 px-4 text-sm text-emerald-300">Delivery</td>
-                                <td class="py-2 px-4 text-sm text-slate-400">Stream-Aligned (PoS), Complicated Subsystem (Odoo)</td>
-                            </tr>
-                            <tr class="border-b border-slate-800">
-                                <td class="py-2 px-4 text-sm text-slate-400">Billing / Shipping & Delivery</td>
-                                <td class="py-2 px-4 text-sm text-rose-300">Operations</td>
-                                <td class="py-2 pl-4 text-sm text-slate-400">Platform (Data, Tech), Stream-Aligned (Logistics)</td>
-                            </tr>
-                            <tr class="border-b border-slate-800">
-                                <td class="py-2 px-4 text-sm text-emerald-300">Delivery</td>
-                                <td class="py-2 px-4 text-sm text-slate-400">Complicated Subsystem (Lab), Enabling (Quality)</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2 pr-4 text-sm text-slate-400">Warranty & Support</td>
-                                <td class="py-2 px-4 text-sm text-rose-300">Operations</td>
-                                <td class="py-2 pl-4 text-sm text-slate-400">Stream-Aligned (CustomerCare), Enabling (Design)</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
+    <script src="script.js"></script>
 </body>
 </html>
